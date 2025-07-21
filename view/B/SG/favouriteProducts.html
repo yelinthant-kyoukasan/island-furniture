@@ -1,0 +1,139 @@
+<script src="../checkCountry.js"></script>
+<html>
+<script src="../../header.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<body>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const memberEmail = sessionStorage.getItem('memberEmail');
+            const token = sessionStorage.getItem('token');
+            var countryId = localStorage.getItem('countryId');
+
+            if (!memberEmail || !token) {
+                alert('Please log in first.');
+                window.location.href = '/B/SG/memberLogin.html';
+                return;
+            }
+
+            fetch('/api/getFavouriteItems', {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+                .then(res => res.json())
+                .then(favs => {
+                    if (!Array.isArray(favs) || favs.length === 0) {
+                        document.getElementById("furnituresDisplay").innerHTML = '<p>No favourites yet.</p>';
+                        return;
+                    }
+                    console.log(favs)
+                    favs.forEach(fav => {
+                        fetch('/api/getFurnitureById?countryId=' + countryId + '&productId=' + fav.product_id, {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Bearer ' + token
+                            }
+                        })
+                            .then(res => res.json())
+                            .then(furniture => {
+                                var furniture = furniture[0];
+                                let htmlTxt = `
+          <li class="col-md-3 col-sm-6 col-xs-12 product" style="padding-bottom: 1%;padding-top: 2%;">
+            <span class="product-thumb-info">
+              <span class="product-thumb-info-image">
+                <img alt="" class="img-responsive" src="${furniture.imageURL}">
+              </span>
+              <span class="product-thumb-info-content">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <h4>${furniture.name}</h4>
+                  <button onclick="toggleFavourite(${fav.product_id})" style="background:none; border:none;">
+                    <i id="heartIcon-${fav.product_id}" class="fa-solid fa-heart" style="color: red; font-size: 24px;"></i>
+                  </button>
+                </div>
+                <span class="product-thumb-info-act-left"><em>Height: ${furniture.height}</em></span><br/>
+                <span class="product-thumb-info-act-left"><em>Length: ${furniture.length}</em></span><br/>
+                <span class="product-thumb-info-act-left"><em>Width: ${furniture.width}</em></span><br/>
+                <span class="product-thumb-info-act-left"><em>Price: $${furniture.price}.00</em></span><br/>
+                <form action="furnitureProductDetails.html">
+                  <input type="hidden" name="sku" value="${furniture.sku}"/>
+                  <input type="submit" class="btn btn-primary btn-block" value="More Details"/>
+                </form>
+              </span>
+            </span>
+          </li>
+        `;
+                                document.getElementById("furnituresDisplay").innerHTML += htmlTxt;
+
+                            });
+                    });
+                })
+                .catch(err => {
+                    console.error(err);
+                    document.getElementById("furnituresDisplay").innerHTML = '<p>Error loading favourites.</p>';
+                });
+        });
+        function toggleFavourite(product_id) {
+            const token = sessionStorage.getItem('token');
+            const heartIcon = document.getElementById(`heartIcon-${product_id}`);
+            console.log(product_id)
+            if (!token) {
+                alert('Please log in first.');
+                return;
+            }
+
+            // Remove from favourites
+            fetch('/api/removeFavouriteItem', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({ product_id: product_id }) // Assumes backend accepts `id` as the favourite item ID
+            })
+                .then(response => response.json())
+                .then(() => {
+                    alert("The item has been removed from your Favourites");
+                    window.location.reload();
+                    heartIcon.classList.remove("fa-solid");
+                    heartIcon.classList.add("fa-regular");
+                    heartIcon.style.color = "black";
+                })
+                .catch(err => {
+                    console.error("Error removing favourite:", err);
+                });
+        }
+    </script>
+
+    <div class="body">
+        <script src="menu2.js"></script>
+        <div class="body">
+            <div role="main" class="main">
+                <section class="page-top">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h2>My Favourite Products</h2>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="container">
+                    <script src="/displayMessageLong.js"></script>
+                    <div class="row">
+                        <ul id="furnituresDisplay" class="products product-thumb-info-list"
+                            style="list-style-type: none; margin-left: -3%;" data-plugin-masonry>
+                        </ul>
+                    </div>
+                    <hr class="tall">
+                </div>
+            </div>
+        </div>
+        <script src="../footer.js"></script>
+    </div>
+</body>
+
+</html>
