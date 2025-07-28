@@ -209,6 +209,11 @@
             var repassword = document.getElementById("repassword").value;
             var ok = true;
             console.log(oldPassword)
+            if ((oldPassword || password || repassword) &&
+                (!oldPassword || !password || !repassword)) {
+                alert("If you want to change your password, please fill in all 3 fields: old password, new password, and re-enter new password.");
+                return;
+            }
             if (document.getElementById("profileForm").checkValidity()) {
                 if (oldPassword != "" && password != "" && repassword != "") {
                     var memberData = {
