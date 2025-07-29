@@ -30,7 +30,17 @@
                 return response.json();
             }).then(function (furniture) {
                 //set furniture details
+                console.log(furniture)
+                let infoHtml =
+                    '<span>Height:</span> ' + furniture.height + ' <br>' +
+                    '<span>Length:</span> ' + furniture.length + ' <br>' +
+                    '<span>Width:</span> ' + furniture.width;
+
                 document.getElementById("imgFurniture").setAttribute('src', furniture.imageURL);
+                document.getElementById("furnitureName").textContent = furniture.name;
+                document.getElementById("price").textContent = '$' + furniture.price.toFixed(2);
+                document.getElementById("description").textContent = furniture.description;
+                document.getElementById("furnitureInfo").innerHTML = infoHtml;
 
                 if (memberEmail != null && memberEmail != '') {
                     document.getElementById("addToCartBtn").innerHTML = '<button class="btn btn-primary" onclick="addToCart(\''
@@ -307,7 +317,6 @@
                         <div class="col-md-6">
                             <div class="summary entry-summary">
                                 <h2 class="shorter"><strong id="furnitureName"></strong></h2>
-                                <div id="addToCartBtn"></div>
                                 <p class="price">
                                 <h4 class="amount" id="price"></h4>
                                 </p>
@@ -331,6 +340,8 @@
                                     </div>
                                     <div id="quantityDiv"></div>
                                 </div>
+                                <div id="addToCartBtn"></div>
+
                             </div>
                         </div>
                         <hr class="tall">
