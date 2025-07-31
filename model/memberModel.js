@@ -476,7 +476,7 @@ var memberDB = {
                         } else {
                             if(result.affectedRows > 0) {
                                 var mailOptions = {
-                                    from: 'tilldawn719@gmail.com',
+                                    from: 'islandfurniture80@gmail.com',
                                     to: email,
                                     subject: 'Island Furniture Member Feedback',
                                     text: 'Feedback from Island Furniture member'
@@ -604,7 +604,7 @@ var emailer = nodemailer.createTransport({
     port: 587,
     secure: false,
     auth: {
-        user: 'tilldawn719@gmail.com',
-        pass: 'vnqlxsijnjhcxwmt'
+        user: 'islandfurniture80@gmail.com',
+        pass: 'jbbiqwadkxzlshpk'
     }
 });
