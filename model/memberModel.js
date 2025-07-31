@@ -476,8 +476,8 @@ var memberDB = {
                         } else {
                             if(result.affectedRows > 0) {
                                 var mailOptions = {
-                                    from: 'islandfurnituresep@gmail.com',
-                                    to: 'islandfurnituresep@gmail.com',
+                                    from: 'tilldawn719@gmail.com',
+                                    to: email,
                                     subject: 'Island Furniture Member Feedback',
                                     text: 'Feedback from Island Furniture member'
                                         + '\nName: ' + name
@@ -600,8 +600,11 @@ var generateRandomNumber = function(digits){
 
 var emailer = nodemailer.createTransport({
     service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,
     auth: {
-        user: 'islandfurnituresep@gmail.com',
-        pass: 'islandFurniture123'
+        user: 'tilldawn719@gmail.com',
+        pass: 'vnqlxsijnjhcxwmt'
     }
 });
